@@ -11,7 +11,7 @@ var query = client.query(
     'CREATE TABLE my_user('
         + 'id SERIAL PRIMARY KEY, '
         + 'user_name VARCHAR(40), '
-        + 'user_social_token VARCHAR(40) not null, '
+        + 'user_social_token VARCHAR(255) not null, '
         + 'user_group VARCHAR(51), '
         + 'user_heart_num Int, '
         + 'user_registration_date timestamp, '

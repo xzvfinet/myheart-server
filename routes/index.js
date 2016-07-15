@@ -4,21 +4,16 @@ var path = require('path');
 
 var db = require('../mydb');
 
-// database
-var pg = require('pg');
-var dbUrl = require(path.join(__dirname, '../', 'config.js'));
-
-router.post('/auth', function (req, res) {
-  var token = req.param('login_token');
-  
-  console.log("requested token: " + token);
-  res.send('merong');
+router.get('/auth/:token', function (req, res) {
+  var token = req.params.token;
+  db.insertNewUser(token, function (success, err) {
+    res.send(success);
+  });
 });
-
 
 // DEBUG
 /* GET home page. */
-router.get('/login', function (req, res, next) {
+router.get('/auth', function (req, res, next) {
   res.send('login get test success!!');
 });
 
