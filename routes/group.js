@@ -25,7 +25,7 @@ router.get('/:group_id', function (req, res) {
       res.status(500).json({ result: false });
     }
     else {
-      res.send('success: ' + group.group_name);
+      res.send(group);
     }
   });
 });

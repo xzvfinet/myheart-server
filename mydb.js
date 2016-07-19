@@ -90,31 +90,19 @@ module.exports.newGroup = function (group_id, group_name, callback) {
 module.exports.getGroup = function (group_id, callback) {
     pg.connect(dbUrl, function (err, client, done) {
         client.query(
-            'SELECT * FROM my_group WHERE id = &1;',
+            'SELECT * FROM my_group WHERE id=$1',
             [group_id],
             function (err, result) {
                 if (err) {
-                    // console.log(err);
+                    console.log(err);
+                    callback(err);
                 } else {
                     console.log('GET group ' + result.rows[0]);
+                    callback(err, result.rows[0]);
                 }
-                callback(err, result.rows[0]);
                 client.end();
             }
         )
-    });
-}
-
-module.exports.increaseUserHeart = function (token, callback) {
-    pg.connect(dbUrl, function (err, client, done) {
-        client.query(
-            'UPDATE my_user SET user_heart_num=(user_heart_num+1) WHERE user_social_token=$1',
-            [token],
-            function (err, result) {
-                callback(err);
-                client.end();
-            }
-        );
     });
 }
 
@@ -125,11 +113,18 @@ module.exports.newHeart = function (sender_id, target_id, callback) {
             [sender_id, target_id],
             function (err, result) {
                 if (err) {
+                    console.log(err);
                 }
                 else {
-                    increaseUserHeart(target_id, function (err) { if (err) { } else { console.log("target의 heart 증가 성공"); } });
+                    client.query(
+                        'UPDATE my_user SET user_heart_num=(user_heart_num+1) WHERE user_social_token=$1',
+                        [target_id],
+                        function (err, result) {
+                            callback(err);
+                            client.end();
+                        }
+                    );
                 }
-                client.end();
             }
         )
     });

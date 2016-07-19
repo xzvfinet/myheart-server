@@ -5,8 +5,8 @@ var db = require('../mydb');
 
 router.post('/:token', function (req, res, next) {
   var token = req.params.token;
-  var user_name = req.params.user_name;
-  var user_group = req.params.user_group;
+  var user_name = req.body.user_name;
+  var user_group = Number(req.body.user_group);
 
   db.newUser(token, user_name, user_group,
     function (err, user) {
@@ -29,7 +29,8 @@ router.get('/:token', function (req, res, next) {
     }
     else {
       if (user) {
-        res.send('success: ' + user.id);
+        res.send(user);
+        // res.send('success: ');
       } else {
         res.status(500).json({ result: false });
       }
