@@ -6,8 +6,14 @@ var db = require('../mydb');
 
 router.get('/auth/:token', function (req, res) {
   var token = req.params.token;
-  db.insertNewUser(token, function (success, err) {
-    res.send(success);
+  db.insertNewUser(token, function (err) {
+    if (err) {
+      console.log('에러 발생: ' + err);
+      res.status(500).json({ result: false });
+    }
+    else {
+      res.send();
+    }
   });
 });
 
