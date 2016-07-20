@@ -22,7 +22,6 @@ router.post('/:token', function (req, res, next) {
 
 router.get('/:token', function (req, res, next) {
   var token = req.params.token;
-
   db.getUser(token, function (err, user) {
     if (err) {
       res.status(500).json({ result: false });
@@ -30,7 +29,6 @@ router.get('/:token', function (req, res, next) {
     else {
       if (user) {
         res.send(user);
-        // res.send('success: ');
       } else {
         res.status(500).json({ result: false });
       }

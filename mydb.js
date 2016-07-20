@@ -24,7 +24,7 @@ module.exports.newUser = function (token, user_name, user_group, callback) {
 module.exports.getUser = function (token, callback) {
     pg.connect(dbUrl, function (err, client, done) {
         client.query(
-            'SELECT * FROM my_user WHERE user_social_token = $1;',
+            'SELECT * FROM my_user WHERE user_social_token=$1;',
             [token],
             function (err, result) {
                 if (err) {

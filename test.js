@@ -6,13 +6,14 @@ var dbUrl = require(path.join(__dirname, 'config.js'));
 pg.connect(dbUrl, function (err, client, done) {
     var i = 0, count = 0;
     client.query(
-        'INSERT into my_user (user_name, user_social_token, user_group, user_heart_num, user_registration_date, user_last_visit_date) VALUES($1, $2, $3, $4, $5, $6) RETURNING id',
-        ['Hajin', 'token', 'group', 0, new Date(), new Date()],
+        'SELECT * FROM my_user WHERE user_social_token=$1;',
+        ['EAAYtYSv42poBANIrVFweD9srKouaumCN0v7Q6e4mCr2gUaC79K9F36Cn8c35n4LBWjkeLqoEEVmphwhwdPoMsa1SM82Yu3YSwaSHXivQogCwCQp3avb8eqHQhglNSeg5aOZCvBo1stKgSshqQlRfFOE69tM87Hz7jZCC10zFmEAlnI8CHI37VU5tT7u19v5sFCztbeywZDZD'],
         function (err, result) {
             if (err) {
                 console.log(err);
             } else {
-                console.log('row inserted with id: ' + result.rows[0].id);
+                console.log(result.rows[0]);
+                console.log('row inserted with id: ');
             }
 
             client.end();

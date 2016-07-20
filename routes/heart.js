@@ -26,7 +26,11 @@ router.get('/:token', function (req, res, next) {
       res.send(err);
     }
     else {
-      res.send({'num' : user["user_heart_num"]});
+      if (user) {
+        res.send({ 'num': user["user_heart_num"] });
+      } else {
+        res.status(500).json({ result: false });
+      }
     }
   });
 });
