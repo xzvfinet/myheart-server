@@ -15,7 +15,7 @@ router.post('/:token', function (req, res, next) {
         res.status(500).json({ result: false });
       }
       else {
-        res.send('success id: ' + user.id);
+        res.send('success: ' + JSON.stringify(user));
       }
     });
 });

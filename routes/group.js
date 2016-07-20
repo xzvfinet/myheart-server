@@ -34,8 +34,11 @@ router.get('/:group_id/users', function (req, res) {
   var group_id = Number(req.params.group_id);
 
   db.getGroupUsers(group_id, function (err, user_list) {
-    console.log(user_list);
-    res.send(user_list);
+    if (err) {
+      console.error(err);
+    } else {
+      res.send(user_list);
+    }
   });
 });
 

@@ -7,13 +7,13 @@ router.post('/', function (req, res, next) {
   var sender_id = req.body.sender_id;
   var target_id = req.body.target_id;
 
-  db.newHeart(sender_id, target_id, function (err) {
+  db.newHeart(sender_id, target_id, function (err, heart) {
     if (err) {
       console.log(err);
-      res.send(err);
+      res.status(500).json({ result: false });
     }
     else {
-      res.send('success');
+      res.send(heart);
     }
 
   });
@@ -29,7 +29,7 @@ router.get('/:token', function (req, res, next) {
       if (user) {
         res.send({ 'num': user["user_heart_num"] });
       } else {
-        res.status(500).json({ result: false });
+        res.send(500).json({ result: false });
       }
     }
   });
