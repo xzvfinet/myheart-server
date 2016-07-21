@@ -3,13 +3,14 @@ var router = express.Router();
 
 var db = require('../mydb');
 
-router.post('/:token', function (req, res, next) {
-  var token = req.params.token;
+router.post('/:user_id', function (req, res, next) {
+  var user_id = req.params.user_id;
+  var user_token = req.body.user_token;
   var user_name = req.body.user_name;
   var user_description = req.body.user_description;
   var user_group = Number(req.body.user_group);
 
-  db.newUser(token, user_name, user_description, user_group,
+  db.newUser(user_id, user_token, user_name, user_description, user_group,
     function (err, user) {
       if (err) {
         console.log('새로운 유저 생성 에러: ' + err);
@@ -21,9 +22,9 @@ router.post('/:token', function (req, res, next) {
     });
 });
 
-router.get('/:token', function (req, res, next) {
-  var token = req.params.token;
-  db.getUser(token, function (err, user) {
+router.get('/:user_id', function (req, res, next) {
+  var user_id = req.params.user_id;
+  db.getUser(user_id, function (err, user) {
     if (err) {
       res.status(500).json({ result: false });
     }

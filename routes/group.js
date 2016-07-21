@@ -35,16 +35,18 @@ router.get('/:group_id', function (req, res) {
   });
 });
 
-router.get('/:group_id/users', function (req, res) {
+router.get('/:group_id/users/:except_id', function (req, res) {
   var group_id = Number(req.params.group_id);
+  var except_id = req.params.except_id;
 
-  db.getGroupUsers(group_id, function (err, user_list) {
-    if (err) {
-      console.error(err);
-    } else {
-      res.send(user_list);
-    }
-  });
+  db.getGroupUsers(group_id, except_id,
+    function (err, user_list) {
+      if (err) {
+        console.error(err);
+      } else {
+        res.send(user_list);
+      }
+    });
 });
 
 module.exports = router;

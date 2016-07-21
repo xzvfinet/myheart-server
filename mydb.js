@@ -11,10 +11,11 @@ Date.prototype.toMysqlFormat = function () {
     return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" + twoDigits(this.getUTCDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
 };
 
-module.exports.newUser = function (token, user_name, user_description, user_group, callback) {
+module.exports.newUser = function (user_id, user_token, user_name, user_description, user_group, callback) {
     pool.getConnection(function (err, connection) {
         var user = {
-            'user_social_token': token,
+            'user_id': user_id,
+            'user_token': user_token,
             'user_name': user_name,
             'user_description': user_description,
             'user_group': user_group,
@@ -37,7 +38,7 @@ module.exports.newUser = function (token, user_name, user_description, user_grou
 module.exports.getUser = function (token, callback) {
     pool.getConnection(function (err, connection) {
         connection.query(
-            'SELECT * FROM my_user WHERE user_social_token=?',
+            'SELECT * FROM my_user WHERE user_id=?',
             [token],
             function (err, rows) {
                 if (err) {
@@ -51,11 +52,12 @@ module.exports.getUser = function (token, callback) {
     });
 };
 
-module.exports.getGroupUsers = function (group_id, callback) {
+module.exports.getGroupUsers = function (group_id, except_id, callback) {
     pool.getConnection(function (err, connection) {
+        console.log('except: ' + except_id);
         connection.query(
-            'SELECT user_name, user_social_token, user_heart_num FROM my_user WHERE user_group=?',
-            [group_id],
+            'SELECT user_id, user_name, user_description, user_heart_num FROM my_user WHERE user_group=? AND NOT user_id=?',
+            [group_id, except_id],
             function (err, rows) {
                 if (err) {
                     callback(err, null);
@@ -69,15 +71,7 @@ module.exports.getGroupUsers = function (group_id, callback) {
 }
 
 module.exports.updateUserName = function (token, new_name, callback) {
-    // pg.connect(dbUrl, function (err, client, done) {
-    //     client.query(
-    //         'UPDATE my_user SET user_name=$1 WHERE user_social_token=$2',
-    //         [new_name, token],
-    //         function (err, result) {
-    //             callback(err);
-    //         }
-    //     );
-    // });
+
 }
 
 module.exports.newGroup = function (group_id, group_name, callback) {
@@ -134,7 +128,7 @@ module.exports.newHeart = function (sender_id, target_id, callback) {
                 }
                 else {
                     connection.query(
-                        'UPDATE my_user SET user_heart_num=(user_heart_num+1) WHERE user_social_token=?',
+                        'UPDATE my_user SET user_heart_num=(user_heart_num+1) WHERE user_id=?',
                         [target_id],
                         function (err, result) {
                             if (err) {
