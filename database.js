@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var pool = mysql.createPool(require('./config'));
 
 pool.getConnection(function(err, connection) {
-    connection.query('CREATE TABLE my_user(user_social_token VARCHAR(255) NOT NULL, user_name VARCHAR(40), user_group Int, user_heart_num Int, user_registration_date DATETIME DEFAULT CURRENT_TIMESTAMP, user_last_visit_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY(user_social_token));',
+    connection.query('CREATE TABLE my_user(user_social_token VARCHAR(255) NOT NULL, user_name VARCHAR(40), user_description VARCHAR(50), user_group Int, user_heart_num Int, user_registration_date DATETIME DEFAULT CURRENT_TIMESTAMP, user_last_visit_date DATETIME DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP, PRIMARY KEY(user_social_token));',
     function(err, result) {
         if (err) console.error('my_user 테이블 생성 에러' + err);
         connection.release();

@@ -6,16 +6,17 @@ var db = require('../mydb');
 router.post('/:token', function (req, res, next) {
   var token = req.params.token;
   var user_name = req.body.user_name;
+  var user_description = req.body.user_description;
   var user_group = Number(req.body.user_group);
 
-  db.newUser(token, user_name, user_group,
+  db.newUser(token, user_name, user_description, user_group,
     function (err, user) {
       if (err) {
         console.log('새로운 유저 생성 에러: ' + err);
         res.status(500).json({ result: false });
       }
       else {
-        res.send('success: ' + JSON.stringify(user));
+        res.send(user);
       }
     });
 });

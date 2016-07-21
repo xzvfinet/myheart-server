@@ -11,11 +11,12 @@ Date.prototype.toMysqlFormat = function () {
     return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" + twoDigits(this.getUTCDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
 };
 
-module.exports.newUser = function (token, user_name, user_group, callback) {
+module.exports.newUser = function (token, user_name, user_description, user_group, callback) {
     pool.getConnection(function (err, connection) {
         var user = {
             'user_social_token': token,
             'user_name': user_name,
+            'user_description': user_description,
             'user_group': user_group,
             'user_heart_num': 0,
             "user_last_visit_date": new Date().toMysqlFormat()
