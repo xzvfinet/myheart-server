@@ -1,5 +1,6 @@
 var mysql = require('mysql');
 var pool = require('./database');
+var gcm = require('./gcm.js');
 
 function twoDigits(d) {
     if (0 <= d && d < 10) return "0" + d.toString();
@@ -11,11 +12,12 @@ Date.prototype.toMysqlFormat = function () {
     return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" + twoDigits(this.getUTCDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
 };
 
-module.exports.newUser = function (user_id, user_token, user_name, user_description, user_group, callback) {
+module.exports.newUser = function (user_id, user_token, user_gcm_token, user_name, user_description, user_group, callback) {
     pool.getConnection(function (err, connection) {
         var user = {
             'user_id': user_id,
             'user_token': user_token,
+            'user_gcm_token': user_gcm_token,
             'user_name': user_name,
             'user_description': user_description,
             'user_group': user_group,
@@ -113,6 +115,24 @@ module.exports.getGroup = function (group_id, callback) {
     });
 }
 
+function sendPushTo(target_id) {
+    pool.getConnection(function (err, connection) {
+        connection.query(
+            'SELECT user_gcm_token FROM my_user WHERE user_id=?',
+            [target_id],
+            function (err, rows) {
+                if (err) {
+                    console.log("push 보내기 에러: " + err);
+                }
+                else {
+                    gcm.sendPush(rows[0]["user_gcm_token"], "누군가가 하트를 보냈습니다!");
+                    gcm.sendPush(rows[0]["user_gcm_token"], "누군가가 하트를 보냈습니다!");
+                }
+                connection.release();
+            });
+    });
+}
+
 module.exports.newHeart = function (sender_id, target_id, callback) {
     pool.getConnection(function (err, connection) {
         var heart = {
@@ -136,6 +156,7 @@ module.exports.newHeart = function (sender_id, target_id, callback) {
                             }
                             else {
                                 callback(err, heart);
+                                sendPushTo(target_id);
                             }
                         });
 
