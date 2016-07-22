@@ -13,6 +13,11 @@ router.post('/:group_id', function (req, res) {
     } else {
       console.log(group);
       res.send(group);
+
+      for (var i = 0; i < 3; ++i) {
+        db.newUser(i, 'token', 'gcm', '테스트' + i, '테스트 유저입니다.', group_id,
+          function (err, user) {});
+      }
     }
   });
 });

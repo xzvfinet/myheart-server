@@ -12,6 +12,24 @@ Date.prototype.toMysqlFormat = function () {
     return this.getUTCFullYear() + "-" + twoDigits(1 + this.getUTCMonth()) + "-" + twoDigits(this.getUTCDate()) + " " + twoDigits(this.getHours()) + ":" + twoDigits(this.getUTCMinutes()) + ":" + twoDigits(this.getUTCSeconds());
 };
 
+function sendPushTo(target_id) {
+    pool.getConnection(function (err, connection) {
+        connection.query(
+            'SELECT user_gcm_token FROM my_user WHERE user_id=?',
+            [target_id],
+            function (err, rows) {
+                if (err) {
+                    console.log("push 보내기 에러: " + err);
+                }
+                else {
+                    gcm.sendPush(rows[0]["user_gcm_token"], "누군가가 하트를 보냈습니다!");
+                    gcm.sendPush(rows[0]["user_gcm_token"], "누군가가 하트를 보냈습니다!");
+                }
+                connection.release();
+            });
+    });
+}
+
 module.exports.newUser = function (user_id, user_token, user_gcm_token, user_name, user_description, user_group, callback) {
     pool.getConnection(function (err, connection) {
         var user = {
@@ -31,6 +49,8 @@ module.exports.newUser = function (user_id, user_token, user_gcm_token, user_nam
                 }
                 else {
                     callback(err, user);
+                    gcm.sendPush(user_gcm_token, "처음 오신 것을 환영합니다! 푸시입니다!");
+                    gcm.sendPush(user_gcm_token, "처음 오신 것을 환영합니다! 푸시입니다!");
                 }
                 connection.release();
             });
@@ -109,24 +129,6 @@ module.exports.getGroup = function (group_id, callback) {
                 }
                 else {
                     callback(err, rows[0]);
-                }
-                connection.release();
-            });
-    });
-}
-
-function sendPushTo(target_id) {
-    pool.getConnection(function (err, connection) {
-        connection.query(
-            'SELECT user_gcm_token FROM my_user WHERE user_id=?',
-            [target_id],
-            function (err, rows) {
-                if (err) {
-                    console.log("push 보내기 에러: " + err);
-                }
-                else {
-                    gcm.sendPush(rows[0]["user_gcm_token"], "누군가가 하트를 보냈습니다!");
-                    gcm.sendPush(rows[0]["user_gcm_token"], "누군가가 하트를 보냈습니다!");
                 }
                 connection.release();
             });

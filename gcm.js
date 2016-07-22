@@ -1,8 +1,6 @@
 var gcm = require('node-gcm');
 var fs = require('fs');
 
-var message = new gcm.Message();
-
 var message = new gcm.Message({
     collapseKey: 'demo',
     delayWhileIdle: true,
